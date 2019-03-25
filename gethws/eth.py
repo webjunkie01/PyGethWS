@@ -24,8 +24,6 @@ import base64
 from pyramid.response import Response
 
 
-from web3 import Web3, HTTPProvider
-
 from web3.utils.encoding import (
     FriendlyJsonSerde,
 )
@@ -55,9 +53,6 @@ if not config.read('GethWS.ini'):
     raise config.Error('Could not open %s' % config)
 
 ws_provider =  config.get('app:main', 'ws_provider')
-http_provider = config.get('app:main', 'http_provider')
-web3_provider = HTTPProvider(http_provider)
-web3 = Web3(web3_provider)
 
 
 
@@ -156,17 +151,18 @@ class Websocket(WebsocketConnectionView):
 
     @asyncio.coroutine
     async def on_message(self, data):
-        params = data.decode('utf-8')
-        print(params)
+        json_data = data.decode('utf-8')
+        print(json_data)
+        method = "eth_subscribe"
         try:
-            params = json.loads(params).get('params')
+            params = json.loads(json_data)
+            param_args = params.get('params')
+            method = params.get('method')
         except:
             return {'status': 'error','message': 'could not decode data'}
-        print(params)
-        method = "eth_subscribe"
         #params = ["logs", {"address": "0x48878C1aE781F4b68e8EC951F35C113353DF81Ca", "topics": ["0xf7ad76543f114c7bb00ff2cd992ff749d502ed5c0c6f87901ad48f6871fceca1"]}]
         #params = ["newHeads", {"includeTransactions": 'true'}]
-        args = self.encode_rpc_request(method,params)
+        args = self.encode_rpc_request(method,param_args)
         asyncio.ensure_future(self.subscribe(args),loop=self.loop)
 
 

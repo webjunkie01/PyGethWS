@@ -16,8 +16,6 @@ from aiopyramid.helpers import synchronize, spawn_greenlet, use_executor, run_in
 
 from web3 import Web3, HTTPProvider, IPCProvider,middleware, WebsocketProvider
 
-from web3.gas_strategies.time_based import medium_gas_price_strategy
-
 import configparser
 
 from decimal import *
@@ -37,7 +35,6 @@ config = configparser.ConfigParser()
 if not config.read('GethWS.ini'):
     raise config.Error('Could not open %s' % config)
 
-ws_provider =  config.get('app:main', 'ws_provider')
 
 http_provider = config.get('app:main', 'http_provider')
 
@@ -45,7 +42,7 @@ web3_provider = HTTPProvider(http_provider)
 
 web3 = Web3(web3_provider)
 
-pool_interval = 3
+poll_interval = 3
 
 
 @view_config(route_name='root', renderer='json')
