@@ -9,7 +9,7 @@ This endpoint was originally designed to connect to a local geth node. But when 
   git clone https://github.com/webjunkie01/PyGethWS.git
   cd PyGethWS
   venv/bin/pip install -e .
-  venv/bin/uwsgi —ini-paste GethWS.ini
+  venv/bin/uwsgi --ini-paste GethWS.ini
 ```
 If you go to `http://0.0.0.0:6540/` you should receive a json response similar to this
 ```

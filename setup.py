@@ -17,19 +17,23 @@ with open(os.path.join(here, 'CHANGES.rst')) as changes:
 
 requires = [
     'pyramid==1.9.2',
-    'aiopyramid[gunicorn]',
+    'aiopyramid',
     'web3==4.5.0',
     'eth-utils==1.0.2',
     'eth-keyfile==0.5.0',
     'eth-abi==1.1.1',
     'eth-keys==0.2.0b3',
+    'websockets==5.0.1',
+    'aiohttp==2.3.10',
+    'aiohttp-wsgi==0.7.1',
     'uwsgi'
+
 ]
 
 dev_require = [
   'bumpversion',
   'pytest',
-  'pytest-cov'	
+  'pytest-cov'
 ]
 
 setup(
