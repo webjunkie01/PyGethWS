@@ -55,7 +55,6 @@ if not config.read('GethWS.ini'):
 ws_provider =  config.get('app:main', 'ws_provider')
 
 
-
 def is_authenticated(request,token,timestamp):
     token = base64.b64decode(token).decode('utf-8')
     print("decoded token", token)
