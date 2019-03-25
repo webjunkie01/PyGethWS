@@ -1,0 +1,48 @@
+<html>
+<body>
+<div id="log"></div>
+</body>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+    var connection
+    $(function () {
+        log = document.getElementById('log');
+        // if user is running mozilla then use it's built-in WebSocket
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+        connection = new WebSocket('ws://0.0.0.0:6540/eth_balance/0xccC78eB3c711222549379F68267DE28cB670987C');
+
+        connection.onopen = function () {
+        setInterval(ping, 30000);
+        log.innerHTML = '<li class="them">connection success</li>' +    log.innerHTML;
+
+        };
+        connection.onerror = function (error) {
+        log.innerHTML = '<li class="them">an error occurred when sending-receiving data</li>' + log.innerHTML;
+        };
+        connection.onmessage = function (message) {
+        // try to decode json (I assume that each message from server is json)
+        try {
+            var json = JSON.parse(message.data);
+            if (json.message !== '__pong__') {
+                log.innerHTML = '<li class="them">Current ETH Balance '+json.formatted_balance+'</li>' + log.innerHTML;
+            }
+        } catch (e) {
+        console.log('This doesn\'t look like a valid JSON: ', message.data);
+        return;
+        }
+        };
+        function ping() {
+                connection.send('__ping__');
+                tm = setTimeout(function () {
+            }, 5000);
+        }
+
+        function pong() {
+            clearTimeout(tm);
+        }
+    });
+
+</script>
+</html>

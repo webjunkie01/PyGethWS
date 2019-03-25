@@ -1,0 +1,55 @@
+<html>
+<body>
+<div id="log"></div>
+</body>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    var connection
+    $(function () {
+        log = document.getElementById('log');
+        // if user is running mozilla then use it's built-in WebSocket
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+
+        /*
+        ** create signature token
+        var dev_key = "8OBD7N9nr6Xp4DRKoNGkBE58NYRLW5V1qKL1polo"
+        var signature = createSignature()
+        var token = "DEV "+dev_key+'.'+signature
+        var timestamp = new Date().toISOString().replace(/\..+/, '')
+        console.log("TOKEN",token,btoa(token), timestamp)
+
+        // token example
+        var token = 'DEV 8OBD7N9nr6Xp4DRKoNGkBE58NYRLW5V1qKL1polo.NTc2ZTdlYmJjNGM0MzJjNjA3MDZhY2Q5YzQ5NjUwNzljNjgzNzZhMjc2NWJjYTk2NGQ2Yzg4M2MyMWY2NjlkYQ== 2018-08-21T22:27:27'
+        connection = new WebSocket('ws://0.0.0.0:6540/eth/'+btoa(token)+'/'+timestamp);
+        */
+        connection = new WebSocket('ws://0.0.0.0:6540/eth');
+        /**
+            Examples of supported subscriptions
+        connection.send(JSON.stringify({"params": ["newPendingTransactions", {"address": "0x2075967CFda86234d674402b452E6be47daDDf9E" }] }))
+        connection.send(JSON.stringify({"params": ["newHeads", {"address": "0x2075967CFda86234d674402b452E6be47daDDf9E" }] }))
+        connection.send(JSON.stringify({"params": ["logs", {"address": "0xEe7ACd6b0FB65eeBC11cF733fdC606619CF633D4", "topics": [["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"],["0x0000000000000000000000006936b470351b91854aeb7d58f37345994c865be7"] ] }] }))
+        */
+
+        connection.onopen = function () {
+            connection.send(JSON.stringify({"params": ["newPendingTransactions", {"address": "0x2075967CFda86234d674402b452E6be47daDDf9E" }] }))
+        };
+        connection.onerror = function (error) {
+        log.innerHTML = '<li class="them">an error occurred when sending-receiving data</li>' + log.innerHTML;
+        };
+        connection.onmessage = function (message) {
+        // try to decode json (I assume that each message from server is json)
+        try {
+        log.innerHTML = '<li class="them">'+message.data+'</li>' + log.innerHTML;
+        //var json = JSON.parse(message.data);
+        } catch (e) {
+        console.log('This doesn\'t look like a valid JSON: ', message.data);
+        return;
+        }
+        // handle incoming message
+        };
+    });
+
+</script>
+</html>
